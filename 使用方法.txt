@@ -1,0 +1,78 @@
+SQLite3 数据库查看器 - 使用方法
+================================
+
+## 快速开始
+
+### 方法1：一键启动（推荐）
+双击运行 `run.bat` 即可启动应用
+
+### 方法2：命令行启动
+```bash
+python app.py
+```
+
+### 方法3：使用start.py（自动打开浏览器）
+```bash
+python start.py
+```
+
+## 配置数据库路径
+
+### 方式1：使用.env文件（推荐）
+1. 复制 `.env.example` 为 `.env`
+2. 编辑 `.env` 文件，修改数据库路径：
+   ```
+   DATABASE_PATH=./mydatabase.sqlite
+   ```
+
+### 方式2：环境变量
+在启动前设置环境变量：
+```bash
+# Windows
+set DATABASE_PATH=C:\path\to\database.sqlite
+python app.py
+
+# Linux/Mac
+export DATABASE_PATH=/path/to/database.sqlite
+python app.py
+```
+
+### 方式3：直接修改app.py
+在app.py中修改DB_PATH变量：
+```python
+DB_PATH = "你的数据库路径"
+```
+
+## 支持的配置项
+
+在.env文件中可以配置：
+- DATABASE_PATH: 数据库文件路径
+- FLASK_HOST: 服务器监听地址（默认0.0.0.0）
+- FLASK_PORT: 服务器端口（默认8000）
+- FLASK_DEBUG: 调试模式（默认True）
+
+## 示例数据库路径
+
+### Windows系统
+```
+DATABASE_PATH=C:\Users\用户名\Documents\database.sqlite
+DATABASE_PATH=.\data\mydb.sqlite
+```
+
+### Linux/Mac系统
+```
+DATABASE_PATH=/home/用户名/database.sqlite
+DATABASE_PATH=./data/mydatabase.sqlite
+```
+
+## 测试配置
+
+运行测试脚本检查配置：
+```bash
+python test_config.py
+```
+
+## 访问应用
+
+启动后，在浏览器中访问：
+http://localhost:8000

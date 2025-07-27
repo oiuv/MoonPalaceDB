@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite3 数据库查看器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .table-container {
+            max-height: calc(100vh - 200px);
+            min-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .table th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 10;
+        }
+        
+        .json-view {
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.8em;
+            background-color: #f8f9fa;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .loading {
+            display: none;
+        }
+        
+        .badge-method {
+            min-width: 60px;
+        }
+        
+        .status-code {
+            font-weight: bold;
+        }
+        
+        .status-2xx { color: #198754; }
+        .status-4xx { color: #fd7e14; }
+        .status-5xx { color: #dc3545; }
+        .status-other { color: #6c757d; }
+        
+        /* 优化加载和无数据提示，居中居上显示 */
+        .loading-container,
+        .no-data-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: column;
+            padding-top: 100px;
+            min-height: 400px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        /* 响应式高度调整 */
+        @media (max-height: 800px) {
+            .table-container {
+                max-height: calc(100vh - 180px);
+            }
+            .loading-container,
+            .no-data-container {
+                padding-top: 80px;
+                min-height: 350px;
+            }
+        }
+        
+        @media (min-height: 1000px) {
+            .table-container {
+                max-height: calc(100vh - 220px);
+            }
+            .loading-container,
+            .no-data-container {
+                padding-top: 120px;
+                min-height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-database"></i> SQLite3 数据库查看器
+            </span>
+            <span class="navbar-text" id="db-path">
+                正在连接数据库...
+            </span>
+        </div>
+    </nav>
+
+    >    <div class="container-fluid mt-3 h-100">
+        <div class="row h-100">
+            <div class="col-md-3 h-100 d-flex flex-column">
+                <div class="card flex-shrink-0">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-table"></i> 数据表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="tables-list" class="list-group">
+                            <div class="text-center">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">加载中...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3 flex-shrink-0">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">表信息</h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="table-info">
+                            <p class="text-muted">请选择一个表</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9 h-100 d-flex flex-column">
+                <div class="card flex-grow-1 d-flex flex-column">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-shrink-0">
+                        <h5 class="card-title mb-0" id="table-title">
+                            <i class="bi bi-table"></i> 数据预览
+                        </h5>
+                        <div>
+                            <span id="record-count" class="badge bg-secondary">0 条记录</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="refreshData()">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body flex-grow-1 d-flex flex-column" style="min-height: 0; position: relative;">
+                        <!-- 加载提示 - 始终在最上层 -->
+                        <div id="loading" class="loading-container" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 100;">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">加载中...</span>
+                            </div>
+                            <h5 class="text-muted mt-3">正在加载数据...</h5>
+                            <p class="text-muted mb-0">请稍候</p>
+                        </div>
+                        
+                        <!-- 无数据提示 -->
+                        <div id="no-data" class="no-data-container" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 99;">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">暂无数据</h5>
+                            <p class="text-muted mb-0">当前表中没有记录</p>
+                        </div>
+                        
+                        <!-- 数据容器 -->
+                        <div id="data-container" style="display: none;" class="flex-grow-1 d-flex flex-column">
+                            <div class="table-container flex-grow-1">
+                                <table class="table table-striped table-hover" id="data-table">
+                                    <thead id="table-header"></thead>
+                                    <tbody id="table-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情模态框 -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">详细信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detail-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 错误详情模态框 -->
+    <div class="modal fade" id="errorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">错误详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="error-detail-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
