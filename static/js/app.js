@@ -395,12 +395,10 @@ function showDetail(row) {
         if (Object.keys(otherFields).length > 0) {
             html += '<div class="col-12"><h6 class="text-primary">基本信息</h6><hr></div>';
             Object.entries(otherFields).forEach(([key, value]) => {
-                html += `
-                    <div class="col-md-6 mb-3">
-                        <strong>${key}:</strong>
-                        <div class="json-view">${formatValue(value)}</div>
-                    </div>
-                `;
+                html += '<div class="col-md-6 mb-3">' +
+                    '<strong>' + key + ':</strong>' +
+                    '<div class="json-view">' + formatValue(value) + '</div>' +
+                    '</div>';
             });
         }
         
@@ -408,12 +406,10 @@ function showDetail(row) {
         if (Object.keys(requestFields).length > 0) {
             html += '<div class="col-12 mt-4"><h6 class="text-info">请求信息</h6><hr></div>';
             Object.entries(requestFields).forEach(([key, value]) => {
-                html += `
-                    <div class="col-md-6 mb-3">
-                        <strong>${key}:</strong>
-                        <div class="json-view">${formatValue(value)}</div>
-                    </div>
-                `;
+                html += '<div class="col-md-6 mb-3">' +
+                    '<strong>' + key + ':</strong>' +
+                    '<div class="json-view">' + formatValue(value) + '</div>' +
+                    '</div>';
             });
         }
         
@@ -421,12 +417,10 @@ function showDetail(row) {
         if (Object.keys(responseFields).length > 0) {
             html += '<div class="col-12 mt-4"><h6 class="text-success">响应信息</h6><hr></div>';
             Object.entries(responseFields).forEach(([key, value]) => {
-                html += `
-                    <div class="col-md-6 mb-3">
-                        <strong>${key}:</strong>
-                        <div class="json-view">${formatValue(value)}</div>
-                    </div>
-                `;
+                html += '<div class="col-md-6 mb-3">' +
+                    '<strong>' + key + ':</strong>' +
+                    '<div class="json-view">' + formatValue(value) + '</div>' +
+                    '</div>';
             });
         }
         
@@ -436,12 +430,10 @@ function showDetail(row) {
         // 其他表显示所有字段
         let html = '<div class="row">';
         Object.entries(displayRow).forEach(([key, value]) => {
-            html += `
-                <div class="col-md-6 mb-3">
-                    <strong>${key}:</strong>
-                    <div class="json-view">${formatValue(value)}</div>
-                </div>
-            `;
+            html += '<div class="col-md-6 mb-3">' +
+                '<strong>' + key + ':</strong>' +
+                '<div class="json-view">' + formatValue(value) + '</div>' +
+                '</div>';
         });
         html += '</div>';
         content.innerHTML = html;
