@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 # 加载环境变量
 load_dotenv()
 
+# 添加src目录到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 def start_browser(host, port):
     """延迟启动浏览器"""
     time.sleep(2)
@@ -37,7 +40,7 @@ def main():
     
     # 启动Flask应用
     try:
-        from app import app
+        from src.app import app
         # 只在非调试模式或主进程中打开浏览器
         if not debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
             browser_thread = threading.Thread(target=start_browser, args=(host, port))

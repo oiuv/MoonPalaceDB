@@ -17,7 +17,7 @@
 
 ### 方法1：推荐启动方式
 ```bash
-python src/start.py
+python start.py
 ```
 - 自动打开浏览器
 - 显示启动信息
@@ -43,6 +43,16 @@ python src/app.py
 ```
 http://localhost:8000
 ```
+
+## 📸 界面演示
+
+### 主界面
+![主界面](docs/screenshots/main-interface.png)
+*主界面展示数据库表列表和数据预览区域*
+
+### 详情视图
+![详情视图](docs/screenshots/detail-view.png)
+*点击任意行查看完整数据详情，支持JSON格式化显示*
 
 ## ⚙️ 配置说明
 
@@ -114,8 +124,8 @@ FLASK_DEBUG=True                       # 调试模式
 ```
 MoonPalaceDB/
 ├── src/                    # 源代码目录
-│   ├── app.py             # Flask主应用
-│   └── start.py           # 增强启动脚本（自动打开浏览器）
+│   └── app.py             # Flask主应用
+├── start.py               # 增强启动脚本（自动打开浏览器）
 ├── tests/                 # 测试文件
 │   ├── test_config.py     # 配置测试
 │   ├── test_db.py         # 数据库测试

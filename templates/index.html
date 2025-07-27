@@ -11,11 +11,11 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
         
         .table-container {
-            max-height: calc(100vh - 200px);
-            min-height: 500px;
+            max-height: calc(100vh - 160px);
             overflow-y: auto;
         }
         
@@ -59,8 +59,8 @@
             align-items: center;
             justify-content: flex-start;
             flex-direction: column;
-            padding-top: 100px;
-            min-height: 400px;
+            padding-top: 80px;
+            min-height: 350px;
             text-align: center;
             width: 100%;
         }
@@ -68,23 +68,23 @@
         /* 响应式高度调整 */
         @media (max-height: 800px) {
             .table-container {
-                max-height: calc(100vh - 180px);
+                max-height: calc(100vh - 140px);
             }
             .loading-container,
             .no-data-container {
-                padding-top: 80px;
-                min-height: 350px;
+                padding-top: 60px;
+                min-height: 300px;
             }
         }
         
         @media (min-height: 1000px) {
             .table-container {
-                max-height: calc(100vh - 220px);
+                max-height: calc(100vh - 180px);
             }
             .loading-container,
             .no-data-container {
-                padding-top: 120px;
-                min-height: 450px;
+                padding-top: 100px;
+                min-height: 400px;
             }
         }
     </style>
@@ -101,7 +101,7 @@
         </div>
     </nav>
 
-    >    <div class="container-fluid mt-3 h-100">
+        <div class="container-fluid h-100">
         <div class="row h-100">
             <div class="col-md-3 h-100 d-flex flex-column">
                 <div class="card flex-shrink-0">
