@@ -116,7 +116,7 @@ async function loadTableInfo(tableName) {
         let displayFieldsText = '';
         
         if (tableName === 'moonshot_requests') {
-            const keyFields = ['id', 'request_method', 'response_status_code', 'created_at'];
+            const keyFields = ['id', 'response_content_type', 'response_status_code', 'created_at'];
             displaySchema = keyFields.map(fieldName => 
                 data.schema.find(col => col.name === fieldName)
             ).filter(Boolean);
@@ -214,8 +214,8 @@ function displayData(data) {
     let displayFields = [];
     
     if (currentTable === 'moonshot_requests') {
-        // 列表只显示关键字段：id, request_method, response_status_code, created_at
-        const keyFields = ['id', 'request_method', 'response_status_code', 'created_at'];
+        // 列表只显示关键字段：id, response_content_type, response_status_code, created_at
+        const keyFields = ['id', 'response_content_type', 'response_status_code', 'created_at'];
         displayFields = keyFields;
         displaySchema = keyFields.map(fieldName => 
             data.schema.find(col => col.name === fieldName)
