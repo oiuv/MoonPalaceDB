@@ -145,7 +145,6 @@ Thumbs.db
 !data/database.sqlite
 
 # Logs
-logs/
 *.log
 app.log
 
